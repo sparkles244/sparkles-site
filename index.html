@@ -2,31 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sparkles – Floating Showcase</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Primary SEO -->
+  <title>Sparkles the Rollerblading Unicorn – Aerial & Festival Performer</title>
+  <meta name="description" content="Sparkles the Rollerblading Unicorn is an aerialist and performance artist bringing dance, acrobatics, and whimsy to festivals and events. Watch showcase videos and book performances." />
+  <meta name="keywords" content="rollerblading unicorn, Sparkles, aerialist, performance artist, festival performer, aerial dance, Utah performer" />
+  <link rel="canonical" href="https://sparkles.dance/" />
+
+  <!-- Open Graph (social sharing) -->
+  <meta property="og:title" content="Sparkles the Rollerblading Unicorn – Aerial & Festival Performer" />
+  <meta property="og:description" content="Aerialist & performance artist blending dance, acrobatics, and magic. Watch the showcase and book Sparkles for your next event." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sparkles.dance/" />
+  <meta property="og:image" content="https://sparkles.dance/images/og-image.jpg" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Sparkles the Rollerblading Unicorn – Aerial & Festival Performer" />
+  <meta name="twitter:description" content="Aerialist & performance artist blending dance, acrobatics, and magic. Watch the showcase and book Sparkles." />
+  <meta name="twitter:image" content="https://sparkles.dance/images/og-image.jpg" />
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" />
+
+  <!-- Styles -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Sparkles the Rollerblading Unicorn",
+    "jobTitle": "Aerialist & Performance Artist",
+    "url": "https://sparkles.dance/",
+    "image": "https://sparkles.dance/images/og-image.jpg",
+    "sameAs": [
+      "https://instagram.com/scott.dances"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "unicorn.pappi@gmail.com",
+      "contactType": "inquiries"
+    }
+  }
+  </script>
 </head>
 <body>
   <!-- Hero -->
   <section class="hero">
-    <h1>Sparkles – Aerialist & Performance Art</h1>
-    <p>Blending dance, acrobatics, and magic into immersive festival experiences.</p>
+    <h1>Sparkles the Rollerblading Unicorn</h1>
+    <p>Aerialist & Performance Artist • Festivals & Events</p>
     <p class="hint">✨ Click a bubble to reveal a performance ✨</p>
   </section>
 
-  <!-- Floating Soap Bubble Orbs
-       Replace the data-ytid values with your real YouTube VIDEO IDs -->
-  <div class="orb yellow" data-ytid="TQqktXEF_g0"></div>
-  <div class="orb pink"   data-ytid="IBW0DM3Njvg"></div>
-  <div class="orb green"  data-ytid="cEGLzDtrxZk"></div>
+  <!-- Floating Soap Bubble Orbs -->
+  <!-- Replace VIDEO_ID_x with your real YouTube IDs -->
+  <div class="orb yellow" data-ytid="VIDEO_ID_1"></div>
+  <div class="orb pink"   data-ytid="VIDEO_ID_2"></div>
+  <div class="orb green"  data-ytid="VIDEO_ID_3"></div>
 
   <!-- Video Modal (YouTube embed) -->
   <div class="modal" id="videoModal" aria-hidden="true">
     <div class="modal-inner">
       <button class="close" id="closeModal" aria-label="Close video">✕</button>
-
-      <!-- Responsive 16:9 frame for YouTube -->
       <div class="video-frame">
         <iframe
           id="modalFrame"
@@ -42,11 +83,11 @@
     <div class="backdrop" id="backdrop"></div>
   </div>
 
-  <!-- Footer with icons -->
+  <!-- Footer -->
   <footer>
     <p>© 2025 Sparkles</p>
     <div class="socials">
-      <a href="https://instagram.com/scott_dances" target="_blank">
+      <a href="https://instagram.com/scott.dances" target="_blank" rel="noopener">
         <i class="fab fa-instagram"></i> Instagram
       </a>
       •
@@ -59,4 +100,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
