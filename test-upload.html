@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>R2 Upload Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font:16px/1.5 system-ui, Arial; padding:24px; max-width:800px; margin:auto;}
+    .row{margin-bottom:12px}
+    progress{width:100%; height:16px}
+    pre{background:#111; color:#0f0; padding:12px; overflow:auto}
+  </style>
+</head>
+<body>
+  <h1>R2 Upload Test</h1>
+
+  <form id="fanUpload">
+    <div class="row">
+      <input type="file" name="file" id="file" accept="image/*,video/mp4,video/webm" required />
+    </div>
+    <div class="row">
+      <button>Upload to R2</button>
+    </div>
+  </form>
+
+  <div class="row">
+    <label>Progress</label>
+    <progress id="bar" max="100" value="0"></progress>
+  </div>
+
+  <h3>Result</h3>
+  <pre id="out">Waiting…</pre>
+
+  <script>
+  const out = document.getElementById('out');
+  const bar = document.getElementById('bar');
+  const form = document.getElementById('fanUpload');
+
+  // Keep this in sync with your server-side ALLOWED_TYPES
+  const ALLOWED = new Set(["image/jpeg","image/png","image/webp","image/gif","video/mp4","video/webm"]);
+  const IMAGE_MAX_MB = 10;   // client-side guard
+  const VIDEO_MAX_MB = 200;  // client-side guard
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    out.textContent = 'Starting…';
+    bar.value = 0;
+
+    const file = document.getElementById('file').files[0];
+    if(!file){ out.textContent = 'No file selected'; return; }
+
+    // 1) Client-side checks (type + size)
+    if(!ALLOWED.has(file.type)){
+      out.textContent = `Rejected: unsupported type ${file.type}`;
+      return;
+    }
+    const mb = file.size / (1024*1024);
+    const limit = file.type.startsWith('image/') ? IMAGE_MAX_MB : VIDEO_MAX_MB;
+    if(mb > limit){
+      out.textContent = `Rejected: file too large (${mb.toFixed(1)} MB). Limit ${limit} MB.`;
+      return;
+    }
+
+    // 2) Ask the server for a presigned URL (JSON POST)
+    out.textContent = 'Requesting presigned URL…';
+    const initRes = await fetch('/api/upload/init', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type,
+        sizeBytes: file.size
+      })
+    });
+
+    if(!initRes.ok){
+      out.textContent = `Init failed: ${initRes.status} ${initRes.statusText}`;
+      return;
+    }
+
+    const { uploadURL, objectKey } = await initRes.json();
+    out.textContent = `Got URL. Uploading to R2…\nKey: ${objectKey}`;
+
+    // 3) Upload directly to R2 with PUT
+    // Using XMLHttpRequest to get upload progress events (fetch has no upload progress)
+    await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', uploadURL);
+      xhr.setRequestHeader('Content-Type', file.type);
+
+      xhr.upload.onprogress = (evt) => {
+        if (evt.lengthComputable) {
+          const pct = Math.round((evt.loaded / evt.total) * 100);
+          bar.value = pct;
+        }
+      };
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) resolve();
+        else reject(new Error(`PUT failed: ${xhr.status} ${xhr.statusText}`));
+      };
+      xhr.onerror = () => reject(new Error('Network error during PUT'));
+      xhr.send(file);
+    }).catch(err => { throw err; });
+
+    out.textContent = `Upload complete ✅\nKey: ${objectKey}\n\nIf Phase 5 is installed, try:\n/api/media/${objectKey}`;
+    bar.value = 100;
+    form.reset();
+  });
+  </script>
+</body>
+</html>
