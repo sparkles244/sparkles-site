@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sparkles – Floating Showcase</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Sparkles – Aerialist & Performance Art</h1>
+    <p>Blending dance, acrobatics, and magic into immersive festival experiences.</p>
+    <p class="hint">✨ Click a bubble to reveal a performance ✨</p>
+  </section>
+
+  <!-- Floating Soap Bubble Orbs
+       Replace the data-ytid values with your real YouTube VIDEO IDs -->
+  <div class="orb yellow" data-ytid="TQqktXEF_g0"></div>
+  <div class="orb pink"   data-ytid="IBW0DM3Njvg"></div>
+  <div class="orb green"  data-ytid="cEGLzDtrxZk"></div>
+
+  <!-- Video Modal (YouTube embed) -->
+  <div class="modal" id="videoModal" aria-hidden="true">
+    <div class="modal-inner">
+      <button class="close" id="closeModal" aria-label="Close video">✕</button>
+
+      <!-- Responsive 16:9 frame for YouTube -->
+      <div class="video-frame">
+        <iframe
+          id="modalFrame"
+          title="Sparkles Performance"
+          src=""
+          frameborder="0"
+          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      </div>
+    </div>
+    <div class="backdrop" id="backdrop"></div>
+  </div>
+
+  <!-- Footer with icons -->
+  <footer>
+    <p>© 2025 Sparkles</p>
+    <div class="socials">
+      <a href="https://instagram.com/scott.dances" target="_blank">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
+      •
+      <a href="mailto:unicorn.pappi@gmail.com">
+        <i class="fas fa-envelope"></i> Email
+      </a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
