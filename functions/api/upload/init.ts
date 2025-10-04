@@ -1,66 +1,72 @@
-// /functions/api/upload/init.ts
-// Returns a one-time R2 presigned URL for direct browser upload.
-//
-// Security notes:
-// - We sanitize filename.
-// - We restrict MIME types.
-// - We enforce a short expiry.
-// - We set the Content-Type header in the signature so clients must match it.
+// DEBUG version: more explicit error messages to diagnose 400s.
 
 const ALLOWED_TYPES = new Set([
-  // images
   "image/jpeg", "image/png", "image/webp", "image/gif",
-  // videos (add/remove as you like)
   "video/mp4", "video/webm"
 ]);
 
-const MAX_MB_IMAGE = 10;    // soft client-side guard (enforce in frontend too)
-const MAX_MB_VIDEO = 200;   // adjust as you need
+const MAX_MB_IMAGE = 10;
+const MAX_MB_VIDEO = 200;
 
 export const onRequestPost: PagesFunction<{ FANWALL_BUCKET: R2Bucket }> = async ({ request, env }) => {
+  // Require JSON content-type
+  const ctReq = request.headers.get("Content-Type") || "";
+  if (!ctReq.toLowerCase().includes("application/json")) {
+    return new Response("expected application/json request", { status: 400 });
+  }
+
+  let body: any;
   try {
-    // 1) Parse JSON body
-    const { filename, contentType, sizeBytes } = await request.json();
+    body = await request.json();
+  } catch (e) {
+    return new Response("could not parse JSON body", { status: 400 });
+  }
 
-    // 2) Validate inputs
-    if (!filename || typeof filename !== "string") {
-      return new Response("filename required", { status: 400 });
+  const { filename, contentType, sizeBytes } = body || {};
+
+  if (typeof filename !== "string" || !filename) {
+    return new Response("filename required (string)", { status: 400 });
+  }
+  if (typeof contentType !== "string" || !contentType) {
+    return new Response("contentType required (string)", { status: 400 });
+  }
+  if (!ALLOWED_TYPES.has(contentType)) {
+    return new Response(
+      "unsupported contentType; allowed: " + Array.from(ALLOWED_TYPES).join(", "),
+      { status: 415 }
+    );
+  }
+  if (sizeBytes != null && typeof sizeBytes !== "number") {
+    return new Response("sizeBytes must be a number if provided", { status: 400 });
+  }
+
+  // Optional size gate
+  if (typeof sizeBytes === "number") {
+    const mb = sizeBytes / (1024 * 1024);
+    const limit = contentType.startsWith("image/") ? MAX_MB_IMAGE : MAX_MB_VIDEO;
+    if (mb > limit) {
+      return new Response(`file too large; limit ${limit} MB`, { status: 413 });
     }
-    if (!contentType || typeof contentType !== "string") {
-      return new Response("contentType required", { status: 400 });
-    }
-    if (!ALLOWED_TYPES.has(contentType)) {
-      return new Response("unsupported contentType", { status: 415 });
-    }
+  }
 
-    // (Optional) size gate (best-effort; true enforcement happens at upload edge or via chunking)
-    if (typeof sizeBytes === "number") {
-      const mb = sizeBytes / (1024 * 1024);
-      const isImage = contentType.startsWith("image/");
-      const limit = isImage ? MAX_MB_IMAGE : MAX_MB_VIDEO;
-      if (mb > limit) {
-        return new Response(`file too large; limit ${limit} MB`, { status: 413 });
-      }
-    }
+  // Sanitize filename
+  const safe = filename.replace(/[^\w.\-]/g, "_").slice(0, 120);
+  const key = `uploads/${Date.now()}-${crypto.randomUUID()}-${safe}`;
 
-    // 3) Sanitize filename to avoid weird characters
-    const safe = filename.replace(/[^\w.\-]/g, "_").slice(0, 120);
-
-    // 4) Build an object key (path) inside your bucket
-    //    Example: uploads/1730680451000-9f90b4a4-clip.mp4
-    const key = `uploads/${Date.now()}-${crypto.randomUUID()}-${safe}`;
-
-    // 5) Create a presigned PUT URL valid for 5 minutes
+  try {
     const uploadURL = await env.FANWALL_BUCKET.createPresignedUrl({
       key,
       method: "PUT",
-      expiresIn: 60 * 5, // seconds
+      expiresIn: 60 * 5,
       headers: { "Content-Type": contentType }
     });
-
-    // 6) Return info to the client
     return Response.json({ uploadURL, objectKey: key });
-  } catch (err) {
-    return new Response("bad request", { status: 400 });
+  } catch (e: any) {
+    // If binding name is wrong or bucket missing, this will surface here
+    return new Response("failed to create presigned URL: " + (e?.message || e), { status: 500 });
   }
 };
+
+// Optional: handle accidental GETs more gracefully
+export const onRequestGet: PagesFunction = async () =>
+  new Response("Use POST with JSON: { filename, contentType, sizeBytes }", { status: 405 });
