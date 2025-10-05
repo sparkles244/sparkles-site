@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Friends Wall | Sparkles</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: url("images/burningman-bg.jpg") center/cover no-repeat fixed;
+      color: #fff;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 0;
+    }
+    header, main, footer { position: relative; z-index: 1; }
+    header {
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+    header h1 {
+      font-size: 3rem;
+      color: #ffd54a;
+      text-shadow: 0 0 20px #ffd54a;
+    }
+    header p {
+      max-width: 600px;
+      margin: 1rem auto;
+      color: #ccc;
+    }
+    a.btn {
+      display: inline-block;
+      margin-top: 1rem;
+      background: linear-gradient(135deg,#ffd54a,#ff80bf);
+      color: #111;
+      font-weight: bold;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      text-decoration: none;
+      box-shadow: 0 0 15px rgba(255,170,0,0.3);
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+      gap: 16px;
+      padding: 2rem;
+    }
+    .post {
+      background: rgba(20,20,30,0.8);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+      cursor: zoom-in; /* hint that it opens */
+    }
+    .post img, .post video {
+      width: 100%;
+      display: block;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+    }
+    .post p {
+      padding: 0.8rem 1rem;
+      margin: 0;
+      font-size: 0.95rem;
+    }
+    hr.divider {
+      border: none;
+      height: 1px;
+      background: rgba(255,255,255,0.2);
+      margin: 2rem auto;
+      width: 80%;
+    }
+    .stories {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .stories h2 {
+      color: #ffd54a;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .stories article {
+      background: rgba(20,20,30,0.8);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      margin: 1rem 0;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    /* ===== Lightbox (dialog) ===== */
+    dialog#lightbox {
+      border: none;
+      padding: 0;
+      width: min(96vw, 1000px);
+      max-height: 92vh;
+      background: transparent;
+    }
+    dialog::backdrop {
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(2px);
+    }
+    .lb-shell {
+      background: rgba(10,10,16,0.95);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .lb-media {
+      width: 100%;
+      max-height: 70vh;
+      display: block;
+      object-fit: contain;
+      background: #000;
+    }
+    .lb-bar {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+    }
+    .lb-caption {
+      color: #f4f6fb;
+      line-height: 1.4;
+      max-width: 82%;
+    }
+    .lb-controls {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .lb-btn {
+      appearance: none; border: none; cursor: pointer;
+      background: #22263a; color: #fff;
+      padding: 8px 10px; border-radius: 10px;
+      font-weight: 700;
+    }
+    .lb-btn:hover { background: #2b3152; }
+    .lb-nav-btn { min-width: 44px; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Friends Wall</h1>
+    <p>Share your experiences — thanks for making the magic real ✨</p>
+    <a href="/" class="btn">← Back to Home</a>
+  </header>
+
+  <main>
+    <section class="gallery" id="gallery">
+      <div class="post" data-caption="“Bliss under the pink sky”">
+        <img src="images/f1.jpg" alt="Fan photo: Bliss under the pink sky" loading="lazy">
+        <p>“Bliss under the pink sky”</p>
+      </div>
+
+      <div class="post" data-caption="“Salty Shindig”">
+        <video
+          src="https://pub-41b7171a1ea7441c8390c58941eecb40.r2.dev/f2.mp4"
+          controls preload="metadata" playsinline></video>
+        <p>“Salty Shindig”</p>
+      </div>
+
+      <div class="post" data-caption="“Vegas Memorial for Mr.420”">
+        <img src="images/f3.jpg" alt="Fan photo: Vegas Memorial for Mr.420" loading="lazy">
+        <p>“Vegas Memorial for Mr.420”</p>
+      </div>
+
+      <div class="post" data-caption="“Frank the Nudibranch”">
+        <img src="images/f2.jpg" alt="Fan photo: Frank the Nudibranch" loading="lazy">
+        <p>“Frank the Nudibranch”</p>
+      </div>
+
+     <div class="post" data-caption="“Riding in Durango”">
+        <video
+          src="https://pub-41b7171a1ea7441c8390c58941eecb40.r2.dev/f1.mp4"
+          controls preload="metadata" playsinline></video>
+        <p>“Riding in Durango”</p>
+      </div>
+
+      <div class="post" data-caption="“Cicadia Fundraiser”">
+        <img src="images/cicadia.jpg" alt="Fan photo: Cicadia Fundraiser" loading="lazy">
+        <p>“Cicadia Fundraiser”</p>
+      </div>
+
+      <div class="post" data-caption="“My Pogo Stick”">
+        <img src="images/pogo.jpg" alt="Fan photo: My Pogo Stick" loading="lazy">
+        <p>“My Pogo Stick”</p>
+      </div>
+
+      <div class="post" data-caption="“Moab”">
+        <img src="images/f5.jpg" alt="Fan photo: Moab" loading="lazy">
+        <p>“Moab”</p>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <section class="stories">
+      <h2>Friends Stories</h2>
+
+      <article>
+        <h3>How I Found Sparkles at Sunrise</h3>
+        <p>The dust was glowing and the bass felt like a heartbeat under the horizon...</p>
+      </article>
+
+      <article>
+        <h3>The Night the Wind Danced</h3>
+        <p>When the storm cleared, the music never stopped. We built circles of light...</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    © Sparkles • Made with love under desert skies
+  </footer>
+
+  <!-- ===== Lightbox dialog ===== -->
+  <dialog id="lightbox" aria-label="Media viewer">
+    <div class="lb-shell">
+      <div id="lbMediaWrap"></div>
+      <div class="lb-bar">
+        <div id="lbCaption" class="lb-caption"></div>
+        <div class="lb-controls">
+          <button id="lbPrev" class="lb-btn lb-nav-btn" aria-label="Previous">←</button>
+          <button id="lbNext" class="lb-btn lb-nav-btn" aria-label="Next">→</button>
+          <button id="lbClose" class="lb-btn" aria-label="Close">Close</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    (function() {
+      const posts = Array.from(document.querySelectorAll('#gallery .post'));
+      const lb = document.getElementById('lightbox');
+      const lbWrap = document.getElementById('lbMediaWrap');
+      const lbCaption = document.getElementById('lbCaption');
+      const btnPrev = document.getElementById('lbPrev');
+      const btnNext = document.getElementById('lbNext');
+      const btnClose = document.getElementById('lbClose');
+
+      let idx = -1;
+
+      function openAt(i) {
+        idx = i;
+        const post = posts[idx];
+        const media = post.querySelector('img, video');
+        const caption = post.dataset.caption || post.querySelector('p')?.textContent || '';
+
+        lbWrap.innerHTML = '';
+
+        if (media.tagName.toLowerCase() === 'img') {
+          const big = document.createElement('img');
+          big.className = 'lb-media';
+          big.src = media.getAttribute('src');
+          big.alt = media.getAttribute('alt') || 'Photo';
+          lbWrap.appendChild(big);
+        } else {
+          const big = document.createElement('video');
+          big.className = 'lb-media';
+          big.src = media.getAttribute('src');
+          big.controls = true;
+          big.autoplay = true;
+          big.playsInline = true;
+          lbWrap.appendChild(big);
+        }
+
+        lbCaption.textContent = caption;
+        lb.showModal();
+      }
+
+      function closeLB() {
+        // stop video playback when closing
+        const v = lbWrap.querySelector('video');
+        if (v) { try { v.pause(); } catch(e) {} }
+        lb.close();
+      }
+
+      function next() {
+        openAt((idx + 1) % posts.length);
+      }
+
+      function prev() {
+        openAt((idx - 1 + posts.length) % posts.length);
+      }
+
+      // click handlers on posts
+      posts.forEach((post, i) => {
+        post.addEventListener('click', (e) => {
+          // ignore clicks on the caption <p> so users can select text
+          if (e.target.tagName.toLowerCase() === 'p') return;
+          openAt(i);
+        });
+        post.tabIndex = 0;
+        post.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') openAt(i);
+        });
+      });
+
+      // controls
+      btnClose.addEventListener('click', closeLB);
+      btnNext.addEventListener('click', next);
+      btnPrev.addEventListener('click', prev);
+
+      // keyboard navigation while dialog open
+      lb.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') next();
+        else if (e.key === 'ArrowLeft') prev();
+        // Esc closes automatically for dialogs, but keeping for robustness:
+        else if (e.key === 'Escape') closeLB();
+      });
+
+      // close if user clicks outside the shell (dialog backdrop)
+      lb.addEventListener('click', (e) => {
+        const rect = lb.querySelector('.lb-shell').getBoundingClientRect();
+        const inDialog = (
+          e.clientX >= rect.left && e.clientX <= rect.right &&
+          e.clientY >= rect.top && e.clientY <= rect.bottom
+        );
+        if (!inDialog) closeLB();
+      });
+    })();
+  </script>
+</body>
+</html>
