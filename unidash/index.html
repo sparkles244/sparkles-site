@@ -17,32 +17,36 @@ body {
   text-align: center;
 }
 
-/* Framed container */
+/* Outer framed container */
 .overlay {
   background-color: black;
   padding: 20px;
   border-radius: 36px;
-  max-width: 700px;
+  max-width: 720px;
   width: 92%;
-  box-shadow: 0 25px 70px rgba(0,0,0,0.7);
+  box-shadow: 0 25px 70px rgba(0,0,0,0.75);
 }
 
-/* Inner background image panel */
+/* Background image panel */
 .background-panel {
   background: url('assets/background_unicornsky.png') center center no-repeat;
-  background-size: contain; /* FULL image visible */
-  padding: 80px 40px;
+  background-size: cover; /* fills nicely */
+  padding: 70px 40px;
   border-radius: 28px;
   position: relative;
   color: white;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-/* Subtle dark overlay for text readability */
+/* Dark tint for readability */
 .background-panel::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.38);
+  background: rgba(0,0,0,0.45);
   border-radius: 28px;
 }
 
@@ -61,22 +65,25 @@ h1 {
   margin: 10px 0;
 }
 
-p {
-  font-size: 18px;
-  margin: 10px 0 18px 0;
+.tagline {
+  font-size: 20px;
+  margin-bottom: 20px;
 }
 
-.badge {
-  display: inline-block;
-  margin-top: 6px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(0,0,0,0.45);
+.description {
+  font-size: 17px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.note {
   font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 25px;
 }
 
 .links {
-  margin-top: 22px;
+  margin-top: 10px;
 }
 
 a {
@@ -91,42 +98,44 @@ a:hover {
 }
 
 .footer {
-  margin-top: 26px;
+  margin-top: 30px;
   font-size: 14px;
   opacity: 0.9;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 </style>
 </head>
 
 <body>
-  <div class="overlay">
-    <div class="background-panel">
-      <img src="assets/logo_unidash.png" alt="UniDash Logo" class="logo">
 
-      <h1>UniDash</h1>
-      <p>Fast. Magical. Delivered.</p>
+<div class="overlay">
+  <div class="background-panel">
 
-      <div class="badge">Currently in beta testing</div>
+    <img src="assets/logo_unidash.png" alt="UniDash Logo" class="logo">
 
-      <p style="margin-top: 18px;">
-        UniDash is a local delivery service platform for delivering <strong>physical goods</strong>.<br>
-        Serving Salt Lake City, Utah (launch region).
-      </p>
+    <h1>UniDash</h1>
+    <div class="tagline">Fast. Magical. Delivered.</div>
 
-      <p style="font-size: 14px; opacity: 0.9; margin-top: 0;">
-        Note: UniDash does not sell digital goods or digital content within the app.
-      </p>
-
-      <div class="links">
-        <a href="privacy.html">Privacy Policy</a>
-      </div>
-
-      <div class="footer">
-        Operated by <strong>UniDash LLC</strong><br>
-        Contact: <a href="mailto:unidash.delivery@proton.me">unidash.delivery@proton.me</a>
-      </div>
+    <div class="description">
+      UniDash is a local delivery service platform for delivering
+      <strong>physical goods</strong> within the Salt Lake City, Utah area.
     </div>
+
+    <div class="note">
+      Currently in beta testing. UniDash does not sell digital goods or digital content within the app.
+    </div>
+
+    <div class="links">
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+
+    <div class="footer">
+      Operated by <strong>UniDash LLC</strong><br>
+      Contact: <a href="mailto:unidash.delivery@proton.me">unidash.delivery@proton.me</a>
+    </div>
+
   </div>
+</div>
+
 </body>
 </html>
