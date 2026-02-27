@@ -13,34 +13,40 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   text-align: center;
 }
 
-/* Main framed window */
+/* Framed container */
 .overlay {
-  background: url('assets/background_unicornsky.png') center center / cover no-repeat;
-  padding: 70px 50px;
-  border-radius: 32px;
-  max-width: 650px;
-  width: 90%;
+  background-color: black;
+  padding: 20px;
+  border-radius: 36px;
+  max-width: 700px;
+  width: 92%;
   box-shadow: 0 25px 70px rgba(0,0,0,0.7);
-  color: white;
-  position: relative;
-  overflow: hidden;
 }
 
-/* Dark tint for readability */
-.overlay::before {
+/* Inner background image panel */
+.background-panel {
+  background: url('assets/background_unicornsky.png') center center no-repeat;
+  background-size: contain; /* FULL image visible */
+  padding: 80px 40px;
+  border-radius: 28px;
+  position: relative;
+  color: white;
+}
+
+/* Subtle dark overlay for text readability */
+.background-panel::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.45);
-  border-radius: 32px;
+  background: rgba(0,0,0,0.35);
+  border-radius: 28px;
 }
 
-/* Ensure text sits above tint */
-.overlay > * {
+.background-panel > * {
   position: relative;
   z-index: 1;
 }
@@ -83,18 +89,22 @@ a:hover {
 
 <div class="overlay">
 
-<img src="assets/logo_unidash.png" alt="UniDash Logo" class="logo">
+  <div class="background-panel">
 
-<h1>UniDash</h1>
-<p>Fast. Magical. Delivered.</p>
+    <img src="assets/logo_unidash.png" alt="UniDash Logo" class="logo">
 
-<p>Local delivery platform currently in beta testing.</p>
+    <h1>UniDash</h1>
+    <p>Fast. Magical. Delivered.</p>
 
-<a href="privacy.html">Privacy Policy</a>
+    <p>Local delivery platform currently in beta testing.</p>
 
-<div class="footer">
-Operated by YOUR_LLC_NAME
-</div>
+    <a href="privacy.html">Privacy Policy</a>
+
+    <div class="footer">
+      Operated by YOUR_LLC_NAME
+    </div>
+
+  </div>
 
 </div>
 
